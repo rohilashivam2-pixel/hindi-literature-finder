@@ -76,7 +76,10 @@ if "genre" not in st.session_state:
 
 # Sidebar
 st.sidebar.title("⚙️ Configuration")
-api_key = st.sidebar.text_input("Enter your Anthropic API Key", type="password")
+api_key = st.secrets.get("ANTHROPIC_API_KEY")
+if not api_key:
+    st.error("❌ API key not configured. Please contact the app owner.")
+    st.stop()
 
 if api_key:
     st.session_state.api_key = api_key
