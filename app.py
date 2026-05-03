@@ -87,20 +87,19 @@ if api_key:
 st.sidebar.markdown("---")
 st.sidebar.markdown("""
     ### About This App
-    Discover top 10 Hindi literature books powered by Claude AI.
+    Discover top 10 Hindi literature books.
     
     **How to use:**
-    1. Get API key from [console.anthropic.com](https://console.anthropic.com)
-    2. Enter your API key above
-    3. Select or type a genre
-    4. Click "Search Books"
+    1. Select or type a genre
+    2. Click "Search Books"
+    3. Explore the recommendations
 """)
 
 # Main content
 st.markdown("""
     <div class="header-gradient">
         <h1>📚 Hindi Literature Finder</h1>
-        <p>Discover Top 10 Books Powered by Claude AI</p>
+        <p>Discover Top 10 Books in Any Genre</p>
     </div>
 """, unsafe_allow_html=True)
 
@@ -153,8 +152,8 @@ def parse_books_response(response_text):
     
     return books[:10]
 
-# Call Claude API
-def get_books_from_claude(genre: str, api_key: str):
+# Call API
+def get_books(genre: str, api_key: str):
     client = anthropic.Anthropic(api_key=api_key)
     
     prompt = f"""You are an expert in Hindi literature. Provide the top 10 books in the "{genre}" genre of Hindi literature.
@@ -182,13 +181,13 @@ Make sure to:
 # Search logic
 if search_button:
     if not api_key:
-        st.error("❌ Please enter your Anthropic API Key")
+        st.error("❌ Please enter your API Key")
     elif not genre.strip():
         st.error("❌ Please enter a genre")
     else:
         try:
-            with st.spinner("🤖 Querying Claude..."):
-                response = get_books_from_claude(genre, api_key)
+            with st.spinner("Searching..."):
+                response = get_books(genre, api_key)
                 st.session_state.books_data = response
         except anthropic.APIError as e:
             st.error(f"❌ API Error: {str(e)}")
@@ -198,7 +197,7 @@ if st.session_state.books_data:
     st.markdown("---")
     st.markdown(f"## 📖 Top 10 Books - **{genre}**")
     
-    st.info("**Agent Response:**")
+    st.info("**Results:**")
     st.markdown(st.session_state.books_data)
     
     st.markdown("---")
@@ -222,4 +221,4 @@ if st.session_state.books_data:
             """, unsafe_allow_html=True)
 
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: #666;'>Built with Streamlit + Claude AI</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #666;'>Hindi Literature Finder</p>", unsafe_allow_html=True)
